@@ -533,18 +533,6 @@ st.markdown(
         fill: {TEXT_PRIMARY} !important;
         opacity: 1 !important;
     }}
-    /* Always show the « close button on touch devices (it's hover-only by default) */
-    @media (hover: none) {{
-        [data-testid="stSidebarHeader"] *,
-        [data-testid="stSidebarCollapseButton"],
-        [data-testid="stSidebarCollapseButton"] * {{
-            visibility: visible !important;
-            opacity: 1 !important;
-        }}
-        [data-testid="stSidebarCollapseButton"] {{
-            display: block !important;
-        }}
-    }}
 
 
     /* Dataframes */
@@ -1023,8 +1011,9 @@ with tab_overview:
         if rows and st.session_state.get("last_cover_row") != rows[0]:
             st.session_state["last_cover_row"] = rows[0]
             row = title_summary.iloc[rows[0]]
-            if row["Preview"]:
-                show_cover(row["Title"], row["Preview"])
+            img = row["Preview"]
+            if isinstance(img, str) and img:
+                show_cover(row["Title"], img)
         elif not rows:
             st.session_state["last_cover_row"] = None
 
