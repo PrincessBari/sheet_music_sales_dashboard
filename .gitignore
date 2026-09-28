@@ -1,0 +1,26 @@
+# --- Secrets — never commit these ---
+.streamlit/secrets.toml
+.env
+
+# --- Data: keep only sales_report_latest.csv ---
+data/raw/sales_report_2*.csv
+
+# --- Personal notebooks / old scripts ---
+notebooks/
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- OS / editor junk ---
+.DS_Store
+.vscode/
+.idea/
