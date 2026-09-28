@@ -933,7 +933,7 @@ with tab_overview:
     st.markdown("---")
 
     # ---- Top Titles ----
-    st.subheader("Top Titles")
+    st.subheader("Titles by Units Sold, Est. Commissions")
     title_summary = (
         filtered.groupby(["Artist", "Title"])
         .agg(
@@ -961,7 +961,7 @@ with tab_overview:
             x="Quantity",
             y="Artist - Title",
             orientation="h",
-            title="Titles by Quantity Sold",
+            title="Units Sold by Title",
             labels={"Artist - Title": ""},
         )
         fig_titles.update_traces(
