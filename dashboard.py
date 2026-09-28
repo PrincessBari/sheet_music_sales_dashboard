@@ -394,6 +394,16 @@ MAP_CONFIG = {
     ],
 }
 
+# Plotly config for the simple bar charts: no toolbar at all.
+STATIC_CHART_CONFIG = {"displayModeBar": False}
+
+
+def lock_fig(fig):
+    """Turn off zoom/pan so an accidental swipe on mobile can't resize the chart."""
+    fig.update_xaxes(fixedrange=True)
+    fig.update_yaxes(fixedrange=True)
+    return fig
+
 # ----------------------------------------------------------------------------
 # Custom CSS
 # ----------------------------------------------------------------------------
@@ -497,6 +507,33 @@ st.markdown(
         color: {TEXT_PRIMARY} !important;
         font-size: 0.98rem !important;
     }}
+    /* Mobile-only hint in the sidebar */
+    @media (min-width: 768px) {{
+        .mobile-only {{
+            display: none;
+        }}
+    }}
+    /* "Filters" label next to the sidebar icon (mobile only) */
+    .filters-label {{
+        position: fixed;
+        top: 0.9rem;
+        left: 3.1rem;
+        z-index: 999990;
+        color: {TEXT_PRIMARY};
+        font-size: 1.2rem;
+        font-weight: 600;
+        pointer-events: none;
+    }}
+    /* Make the sidebar's « close button dark enough to see */
+    [data-testid="stSidebarHeader"] button,
+    [data-testid="stSidebarHeader"] button *,
+    [data-testid="stSidebarCollapseButton"] button,
+    [data-testid="stSidebarCollapseButton"] button * {{
+        color: {TEXT_PRIMARY} !important;
+        fill: {TEXT_PRIMARY} !important;
+        opacity: 1 !important;
+    }}
+
 
     /* Dataframes */
     [data-testid="stDataFrame"] {{
@@ -616,6 +653,7 @@ sync_thumbnails()
 df = clean_data(str(raw_path), raw_path.stat().st_mtime)
 
 st.title("Sheet Music Sales Dashboard")
+st.markdown('<div class="mobile-only filters-label">Filters</div>', unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------------
 # Sidebar filters (Artist -> Title cascade)
@@ -866,7 +904,7 @@ with tab_overview:
             marker_color=ACCENT, hovertemplate="Units: %{x}<extra></extra>"
         )
         fig_artists.update_layout(height=max(400, 28 * len(top_n_artists)))
-        st.plotly_chart(style_fig(fig_artists), use_container_width=True)
+        st.plotly_chart(lock_fig(style_fig(fig_artists)), use_container_width=True, config=STATIC_CHART_CONFIG)
     with col2:
         top_n_artists_money = artist_summary.sort_values("Est_Commissions")
         fig_artists_money = px.bar(
@@ -881,7 +919,7 @@ with tab_overview:
             marker_color=SECONDARY, hovertemplate="Est. Commissions: $%{x:,.2f}<extra></extra>"
         )
         fig_artists_money.update_layout(height=max(400, 28 * len(top_n_artists_money)))
-        st.plotly_chart(style_fig(fig_artists_money), use_container_width=True)
+        st.plotly_chart(lock_fig(style_fig(fig_artists_money)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
     with st.expander(f"View all {artist_summary.shape[0]} artists"):
         st.dataframe(
@@ -931,7 +969,7 @@ with tab_overview:
             hovertemplate="Quantity: %{x}<extra></extra>",
         )
         fig_titles.update_layout(height=max(400, 28 * len(top_n_titles)))
-        st.plotly_chart(style_fig(fig_titles), use_container_width=True)
+        st.plotly_chart(lock_fig(style_fig(fig_titles)), use_container_width=True, config=STATIC_CHART_CONFIG)
     with col4:
         top_n_titles_money = title_summary.sort_values("Est_Commissions")
         fig_titles_money = px.bar(
@@ -947,7 +985,7 @@ with tab_overview:
             hovertemplate="Est. Commissions: $%{x:,.2f}<extra></extra>",
         )
         fig_titles_money.update_layout(height=max(400, 28 * len(top_n_titles_money)))
-        st.plotly_chart(style_fig(fig_titles_money), use_container_width=True)
+        st.plotly_chart(lock_fig(style_fig(fig_titles_money)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
     with st.expander(f"View all {title_summary.shape[0]} titles"):
         display_cols = ["Preview", "Artist", "Title", "Quantity", "Sales", "Est_Commissions"]
@@ -1050,7 +1088,7 @@ with tab_deep_dive:
             title="Titles Sold Over Time",
         )
         fig_qty_time.update_traces(line_color=ACCENT, marker_color=ACCENT)
-        st.plotly_chart(style_fig(fig_qty_time), use_container_width=True)
+        st.plotly_chart(lock_fig(style_fig(fig_qty_time)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
         # ---- Sales & Est. Commissions over time ----
         time_money = (
@@ -1067,7 +1105,7 @@ with tab_deep_dive:
             title="Sales & Est. Commissions Over Time",
             labels={"value": "Amount ($)", "variable": ""},
         )
-        st.plotly_chart(style_fig(fig_money_time), use_container_width=True)
+        st.plotly_chart(lock_fig(style_fig(fig_money_time)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
         # ---- Channel breakdown ----
         col5, col6 = st.columns([1, 1])
@@ -1085,7 +1123,7 @@ with tab_deep_dive:
                 title="Titles Sold by Channel",
             )
             fig_channel.update_traces(marker_color=ACCENT)
-            st.plotly_chart(style_fig(fig_channel), use_container_width=True)
+            st.plotly_chart(lock_fig(style_fig(fig_channel)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
         with col6:
             # ---- Published dates for the selected title(s) ----
@@ -1134,7 +1172,7 @@ with tab_deep_dive:
                 hoverinfo="skip",
                 hovertemplate=None,
             )
-            st.plotly_chart(style_fig(fig_tx), use_container_width=True)
+            st.plotly_chart(lock_fig(style_fig(fig_tx)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
         st.markdown("Spread of **Est. Commissions** per Unit Sold, by Transaction Type")
         per_unit = filtered.copy()
