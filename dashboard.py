@@ -507,8 +507,8 @@ st.markdown(
         color: {TEXT_PRIMARY} !important;
         font-size: 0.98rem !important;
     }}
-    /* Mobile-only hint in the sidebar */
-    @media (min-width: 768px) {{
+    /* Hide mobile-only items on devices with a mouse (laptops/desktops) */
+    @media (hover: hover) and (pointer: fine) {{
         .mobile-only {{
             display: none;
         }}
