@@ -519,7 +519,7 @@ st.markdown(
         top: 0.9rem;
         left: 3.1rem;
         z-index: 999990;
-        color: {TEXT_PRIMARY};
+        color: #F6F3EC;
         font-size: 1.2rem;
         font-weight: 600;
         pointer-events: none;
