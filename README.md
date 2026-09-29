@@ -5,7 +5,7 @@ ArrangeMe and sold on Sheet Music Plus, Sheet Music Direct, Sheet Music Direct A
 
 Built with **Streamlit**, **pandas** and **Plotly**.
 
-**Live dashboard:** https://
+**Live dashboard:** https://sheetmusicsalesdashboard.streamlit.app/
 
 ## What's in the dashboard
 
