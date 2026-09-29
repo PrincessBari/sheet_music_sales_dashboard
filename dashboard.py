@@ -533,7 +533,19 @@ st.markdown(
         fill: {TEXT_PRIMARY} !important;
         opacity: 1 !important;
     }}
-
+    /* Always show the « close button on touch devices (it's hover-only by default) */
+    @media (hover: none) {{
+        [data-testid="stSidebarHeader"],
+        [data-testid="stSidebarHeader"] *,
+        [data-testid="stSidebarCollapseButton"],
+        [data-testid="stSidebarCollapseButton"] * {{
+            visibility: visible !important;
+            opacity: 1 !important;
+        }}
+        [data-testid="stSidebarCollapseButton"] {{
+            display: block !important;
+        }}
+    }}
 
     /* Dataframes */
     [data-testid="stDataFrame"] {{
