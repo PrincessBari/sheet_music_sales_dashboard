@@ -217,19 +217,24 @@ def has_credentials() -> bool:
         return False
 
 
+@st.cache_resource(show_spinner="Downloading latest sales report...")
+def download_once_per_run() -> bool:
+    """Runs once each time you start the app, not on every click."""
+    download_csv()
+    return True
+
+
 def ensure_fresh_data() -> Path:
-    """Downloads a new report only if the cached CSV is missing or older
-    than REFRESH_INTERVAL, and only where login details are available
-    (your computer). The public cloud version just reads the uploaded CSV."""
-    needs_download = True
-    if RAW_LATEST_PATH.exists():
-        age = datetime.now() - datetime.fromtimestamp(RAW_LATEST_PATH.stat().st_mtime)
-        needs_download = age > REFRESH_INTERVAL
-
-    if needs_download and has_credentials():
-        with st.spinner("Downloading latest sales report..."):
-            download_csv()
-
+    """At home (login available), downloads a fresh report each time the
+    app starts. On the cloud (no login), just reads the CSV in the repo."""
+    if has_credentials():
+        try:
+            download_once_per_run()
+        except Exception as e:
+            if RAW_LATEST_PATH.exists():
+                st.warning(f"Couldn't download a new report, showing the saved one. ({e})")
+            else:
+                raise
     return RAW_LATEST_PATH
 
 
