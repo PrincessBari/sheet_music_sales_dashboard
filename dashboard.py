@@ -26,14 +26,14 @@ SETUP REQUIRED (same as the old download_report.py):
 """
 
 import base64
-import os
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
 import requests
 import streamlit as st
+from download_report import download_csv, get_credentials, RAW_LATEST_PATH
 
 # ----------------------------------------------------------------------------
 # Page config
@@ -43,17 +43,6 @@ st.set_page_config(page_title="Sheet Music Sales Dashboard", layout="wide")
 # ----------------------------------------------------------------------------
 # Data source config (from download_report.py)
 # ----------------------------------------------------------------------------
-LOGIN_PAGE_URL = "https://www.arrangeme.com/account/signin"
-DASHBOARD_URL = "https://www.arrangeme.com/account/dashboard"
-VIEW_REPORTS_SELECTOR = "a.widgetLink[href='#commissions']"  # scoped to avoid matching the dropdown item
-
-USERNAME_SELECTOR = "input[name='email']"
-PASSWORD_SELECTOR = "input[name='password']"
-LOGIN_BUTTON_SELECTOR = "button[type='submit']"
-DOWNLOAD_BUTTON_SELECTOR = "a.downloadSales:visible"  # :visible filters out hidden duplicates
-
-DATA_DIR = Path("data/raw")
-RAW_LATEST_PATH = DATA_DIR / "sales_report_latest.csv"
 THUMBNAIL_DIR = Path("data/thumbnails")
 
 # Only download a fresh report if the cached one is older than this.
@@ -146,69 +135,6 @@ def sync_thumbnails():
 
     return changed
 
-
-def get_credentials():
-    """Pull credentials from Streamlit secrets (cloud) or env vars (local)."""
-    try:
-        return st.secrets["SITE_USERNAME"], st.secrets["SITE_PASSWORD"]
-    except Exception:
-        username = os.environ.get("SITE_USERNAME")
-        password = os.environ.get("SITE_PASSWORD")
-        if not username or not password:
-            raise RuntimeError(
-                "Missing credentials. Set SITE_USERNAME and SITE_PASSWORD "
-                "as environment variables, or in .streamlit/secrets.toml"
-            )
-        return username, password
-
-
-def download_csv() -> Path:
-    """Logs in via a real (headless) browser and downloads the CSV using Playwright."""
-    from playwright.sync_api import sync_playwright
-    username, password = get_credentials()
-
-    _timestamp = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    archive_path = DATA_DIR / f"sales_report_{_timestamp}.csv"
-
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-
-        # --- Step 1: log in ---
-        page.goto(LOGIN_PAGE_URL)
-        # Use type() instead of fill() — some sites only enable the submit
-        # button once real keystroke events fire (fill() sets the value
-        # directly and can skip the events the site's JS is listening for).
-        page.type(USERNAME_SELECTOR, username)
-        page.type(PASSWORD_SELECTOR, password)
-        page.click(LOGIN_BUTTON_SELECTOR)
-
-        # Wait for navigation to the dashboard (or wherever login redirects to)
-        page.wait_for_url("**/account/dashboard**", timeout=15000)
-
-        # --- Step 2: navigate to the reports/download page and trigger the download ---
-        page.goto(DASHBOARD_URL)
-
-        # "View Reports" runs JS to switch tabs and load the Commissions section —
-        # visiting the #commissions URL directly does NOT trigger this render.
-        page.click(VIEW_REPORTS_SELECTOR)
-        page.wait_for_selector(DOWNLOAD_BUTTON_SELECTOR, timeout=15000)
-
-        # The download link opens in a NEW TAB (target="_blank"). We listen for
-        # both the new-page event AND the download event at the context level,
-        # wrapping the click itself so neither event can be missed.
-        with page.context.expect_page(), page.context.expect_event("download") as download_info:
-            page.click(DOWNLOAD_BUTTON_SELECTOR)
-
-        download = download_info.value
-
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        download.save_as(archive_path)
-        download.save_as(RAW_LATEST_PATH)
-
-        browser.close()
-
-    return RAW_LATEST_PATH
 
 def has_credentials() -> bool:
     try:
