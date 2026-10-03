@@ -74,7 +74,8 @@ REFRESH_INTERVAL = timedelta(days=7)
 # "Copy Image Address", and paste the result below.
 THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "683603": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_7db5297900107885.png",  # I Don't Blame You
-    "827483": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_a4f2fe9c0012cba4.png",  # Piano Joint (This Kind of Love)
+    "827483": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dwf19135e7/images/2959/22502959_cover-large_file.png?sw=900&sh=1200&sm=fit",
+    # Piano Joint (This Kind of Love)
     "655513": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_0040fa7800100a33.png",  # It Means Beautiful
     "520999": "",  # Winning (deactivated due to incorrect metadata assignment by website) - no image
     "521008": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_ea56e39f000df6af.png",  # Help, I'm Alive (acoustic)
@@ -85,15 +86,15 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "749218": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_4ab3f69d001188a3.png",  # Echoes of Silence
     "646071": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_e57f3f26000fe3b3.png",  # Calculation Theme
     "521007": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_128b9d79000df6ae.png",  # Five String Serenade
-    "521006": "",  # Doctor Blind (deactivated due to incorrect metadata assignment by website)
-    "521005": "",  # Crowd Surf Off a Cliff (deactivated due to incorrect metadata assignment by website)
+    "521006": "",  # Doctor Blind (deactivated due to incorrect metadata assignment by website) - no image
+    "521005": "",  # Crowd Surf Off a Cliff (deactivated due to incorrect metadata assignment by website) - no image
     "697606": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_778c60aa0010afa6.png",  # Rolling Stone
     "706331": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_468245f40010d49e.png",  # Gold Guns Girls (acoustic)
     "1118988": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_15327f1c00179927.png",  # Friend Of The Night
     "975844": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_3df5be4f00153ea8.png",  # 1 Ghosts I
     "982187": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_027f2cd80015587f.png",  # 13 Ghosts II
     "521003": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_6a862796000df6aa.png",  # Twice
-    "521002": "",  # Rabbit in Your Headlights (deactivated due to incorrect metadata assignment by website)
+    "521002": "",  # Rabbit in Your Headlights (deactivated due to incorrect metadata assignment by website) - no image
     "521004": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_2b3bc98b000df6ab.png",  # Leaving A Voicemail
     "761510": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_a84665340011b7dc.png",  # Twilight Galaxy (acoustic)
     "1131653": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_559419b10017cb82.png",  # Intro
@@ -104,7 +105,7 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "771371": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_3aa4258b0011de5a.png",  # London Halflife
     "897533": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_7e21083c0013f687.png",  # Sick Muse (acoustic)
     "1213044": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_ddac6f2b00191dfc.png",  # Take Me Somewhere Nice	
-    "1469119": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_ed88645e001d29c0.png",  # Everything In Its Right Place		
+    "1469119": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_de3d4cff001d29c0.png",  # Everything In Its Right Place		
     "799066": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_cd8005fc00125087.png",  # Dark Saturday (acoustic)    
     "1470063": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_633bc22d001d2d54.png",  # Fade Into You
     "1162012": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_53558048001845cf.png",  # Rabbit In Your Headlights (Instrumental)
