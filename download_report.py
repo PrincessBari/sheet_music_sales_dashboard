@@ -14,6 +14,9 @@ SETUP REQUIRED:
 import os
 from datetime import datetime
 from pathlib import Path
+import tomllib
+
+PROJECT_DIR = Path(__file__).resolve().parent
 
 # ---------------------------------------------------------------------------
 # CONFIG — replace these placeholders with real values from your site
@@ -29,25 +32,27 @@ PASSWORD_SELECTOR = "input[name='password']"     # confirmed via Inspect
 LOGIN_BUTTON_SELECTOR = "button[type='submit']"  # adjust if the login button differs
 DOWNLOAD_BUTTON_SELECTOR = "a.downloadSales:visible"  # :visible filters out hidden duplicates
 
-DATA_DIR = Path("data/raw")
+DATA_DIR = PROJECT_DIR / "data" / "raw"
 RAW_LATEST_PATH = DATA_DIR / "sales_report_latest.csv"
 
 
 def get_credentials():
-    """Pull credentials from Streamlit secrets (cloud) or env vars (local)."""
-    try:
-        import streamlit as st
-        return st.secrets["SITE_USERNAME"], st.secrets["SITE_PASSWORD"]
-    except Exception:
-        username = os.environ.get("SITE_USERNAME")
-        password = os.environ.get("SITE_PASSWORD")
-        if not username or not password:
-            raise RuntimeError(
-                "Missing credentials. Set SITE_USERNAME and SITE_PASSWORD "
-                "as environment variables, or in .streamlit/secrets.toml"
-            )
+    """Env vars first, then .streamlit/secrets.toml. Works with or without Streamlit."""
+    username = os.environ.get("SITE_USERNAME")
+    password = os.environ.get("SITE_PASSWORD")
+    if username and password:
         return username, password
 
+    secrets_file = PROJECT_DIR / ".streamlit" / "secrets.toml"
+    if secrets_file.exists():
+        with open(secrets_file, "rb") as f:
+            secrets = tomllib.load(f)
+        return secrets["SITE_USERNAME"], secrets["SITE_PASSWORD"]
+
+    raise RuntimeError(
+        "Missing credentials. Set SITE_USERNAME and SITE_PASSWORD "
+        "as environment variables, or in .streamlit/secrets.toml"
+    )
 
 def download_csv() -> Path:
     """Logs in via a real browser and downloads the CSV using Playwright."""
