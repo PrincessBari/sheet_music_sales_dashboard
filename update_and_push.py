@@ -27,7 +27,7 @@ def main():
         print(f"Skipped: the project is on branch '{branch}', not main.")
         return
 
-    git("pull", "--rebase")
+    git("pull", "--rebase", "--autostash")
     download_csv()
 
     csv = str(RAW_LATEST_PATH)
