@@ -47,7 +47,10 @@ def get_credentials():
     if secrets_file.exists():
         with open(secrets_file, "rb") as f:
             secrets = tomllib.load(f)
-        return secrets["SITE_USERNAME"], secrets["SITE_PASSWORD"]
+        username = secrets.get("SITE_USERNAME")
+        password = secrets.get("SITE_PASSWORD")
+        if username and password:
+            return username, password
 
     raise RuntimeError(
         "Missing credentials. Set SITE_USERNAME and SITE_PASSWORD "
