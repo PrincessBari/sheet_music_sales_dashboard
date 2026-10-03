@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.sarakim.sheetmusic</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Library/Frameworks/Python.framework/Versions/3.12/bin/python3</string>
+        <string>-u</string>
+        <string>/Volumes/My Passport for Mac/aaa_sheet_music_sales_9_12_2026/update_and_push.py</string>
+    </array>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Weekday</key><integer>0</integer>
+        <key>Hour</key><integer>6</integer>
+        <key>Minute</key><integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/sarakim/Library/Logs/sheetmusic.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/sarakim/Library/Logs/sheetmusic.log</string>
+</dict>
+</plist>
