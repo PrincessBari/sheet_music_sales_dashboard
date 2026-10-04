@@ -111,11 +111,11 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
 }
 
 @st.cache_data(ttl=60 * 60 * 24 * 7, show_spinner=False)  # re-check covers at most once a week
-def sync_thumbnails():
+def sync_thumbnails(thumbnail_urls):  # URLs passed in, so editing one triggers a fresh check
     THUMBNAIL_DIR.mkdir(parents=True, exist_ok=True)
     changed = False
 
-    for ame_id, url in THUMBNAIL_URLS.items():
+    for ame_id, url in thumbnail_urls.items():  # uses the passed-in URLs
         if not url:  # deactivated titles
             continue
         path = THUMBNAIL_DIR / f"{ame_id}.jpg"
@@ -595,7 +595,7 @@ def metric_card(label: str, value: str, subtext: str | None = None):
 # Data loading: download (if stale) -> clean
 # ----------------------------------------------------------------------------
 raw_path = ensure_fresh_data()
-sync_thumbnails()
+sync_thumbnails(THUMBNAIL_URLS)
 df = clean_data(str(raw_path), raw_path.stat().st_mtime)
 
 st.title("Sheet Music Sales Dashboard")
