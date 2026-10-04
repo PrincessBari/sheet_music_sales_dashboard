@@ -778,6 +778,10 @@ with tab_overview:
     qty_purchase = qty_by_type.get("Purchase", 0)
     qty_view = qty_by_type.get("View", 0)
 
+    sales_by_type = filtered.groupby("Transaction Type")["Sales"].sum()
+    sales_purchase = sales_by_type.get("Purchase", 0)
+    sales_view = sales_by_type.get("View", 0)
+
     comm_by_type = filtered.groupby("Transaction Type")["Est. Commissions"].sum()
     comm_purchase = comm_by_type.get("Purchase", 0)
     comm_view = comm_by_type.get("View", 0)
@@ -793,7 +797,11 @@ with tab_overview:
             subtext=f"By Transaction Type:<br> Purchase (download): {qty_purchase:,} · View (subscription): {qty_view:,}",
         )
     with m2:
-        metric_card("Total Sales", f"${total_sales:,.2f}")
+        metric_card(
+            "Total Sales",
+            f"${total_sales:,.2f}",
+            subtext=f"By Transaction Type:<br> Purchase (download): ${sales_purchase:,.2f} · View (subscription): ${sales_view:,.2f}",
+        )
     with m3:
         metric_card(
             "Total Est. Commissions",
@@ -816,6 +824,58 @@ with tab_overview:
             "Unique Titles",
             f"{unique_title_count:,}",
             subtext=f"Active: {active_count:,} · Deactivated: {deactivated_count:,}",
+        )
+
+    # ---- Monthly averages ----
+    if filtered.empty:
+        monthly = pd.DataFrame(columns=["Quantity", "Sales", "Est. Commissions"])
+    else:
+        # Every month in the selected Date Sold range, so months with no
+        # sales count as 0 instead of being skipped (which would inflate the averages)
+        all_months = pd.period_range(start_sold, end_sold, freq="M")
+        monthly = (
+            filtered.groupby(filtered["Date Sold"].dt.to_period("M"))[
+                ["Quantity", "Sales", "Est. Commissions"]
+            ]
+            .sum()
+            .reindex(all_months, fill_value=0)
+        )
+
+    def fmt_units(v):
+        return f"{v:,.0f}" if float(v).is_integer() else f"{v:,.1f}"
+
+    def fmt_money(v):
+        return f"${v:,.2f}"
+
+    def monthly_card(label, col, fmt):
+        s = monthly[col]
+        if s.empty:
+            metric_card(label, "—")
+            return
+        lo, hi = s.idxmin(), s.idxmax()
+        metric_card(
+            label,
+            fmt(s.mean()),
+            subtext=(
+                f"Min: {fmt(s.min())} ({lo.strftime('%b %Y')})<br>"
+                f"Median: {fmt(s.median())}<br>"
+                f"Max: {fmt(s.max())} ({hi.strftime('%b %Y')})"
+            ),
+        )
+
+    a1, a2, a3 = st.columns(3)
+    with a1:
+        monthly_card("Avg. Titles Sold per Month", "Quantity", fmt_units)
+    with a2:
+        monthly_card("Avg. Sales per Month", "Sales", fmt_money)
+    with a3:
+        monthly_card("Avg. Est. Commissions per Month", "Est. Commissions", fmt_money)
+
+    if not monthly.empty:
+        st.caption(
+            f"Monthly averages cover {len(monthly)} months "
+            f"({monthly.index[0].strftime('%b %Y')} – {monthly.index[-1].strftime('%b %Y')}). "
+            "The first and last month may be partial. Months with no sales count as 0."
         )
 
     st.markdown("---")
