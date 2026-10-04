@@ -933,7 +933,7 @@ with tab_overview:
         fig_titles_money.update_layout(height=max(400, 28 * len(top_n_titles_money)))
         st.plotly_chart(lock_fig(style_fig(fig_titles_money)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
-    with st.expander(f"View all {title_summary.shape[0]} titles"):
+    with st.expander(f"View all {title_summary.shape[0]} titles with sheet music previews"):
         display_cols = ["Preview", "Artist", "Title", "Quantity", "Sales", "Est_Commissions"]
         st.caption("Select a row to see sheet music preview")
         event = st.dataframe(
