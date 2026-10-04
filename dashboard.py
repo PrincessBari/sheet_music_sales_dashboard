@@ -1028,7 +1028,7 @@ with tab_overview:
     # ---- Map: Purchases by Location ----
     st.subheader("Purchases by Location")
     st.caption(
-        "Location data is available only for **Purchase** (download) - and not **View** (subscription) - transactions."
+        "Location data is available only for **Purchase** (download) - not **View** (subscription) - transactions."
     )
     purchases = filtered[filtered["Transaction Type"] == "Purchase"].dropna(subset=["Location"])
 
@@ -1042,24 +1042,53 @@ with tab_overview:
             .sort_values("Quantity", ascending=False)
         )
 
+        # Starts at a visible rose tint (not beige) so low-selling countries
+        # stand out clearly from countries with no sales (land = BG_MAIN)
+        MAP_SCALE = [
+            [0.0, "#E2B4BD"],
+            [0.5, "#A9506A"],
+            [1.0, "#5A1C29"],
+        ]
+
         fig_map = px.choropleth(
             location_summary,
             locations="Location",
             locationmode="country names",
             color="Quantity",
             hover_data={"Sales": ":$,.2f"},
-            color_continuous_scale=CHOROPLETH_SCALE,
+            color_continuous_scale=MAP_SCALE,
         )
         fig_map.update_geos(
             bgcolor="rgba(0,0,0,0)", landcolor=BG_MAIN, showcountries=True, countrycolor=BORDER,
             projection_type="mercator",
             lataxis_range=[-58, 85],
         )
-        fig_map.update_layout(height=550)
 
-        map_col_left, map_col_center, map_col_right = st.columns([1, 6, 1])
-        with map_col_center:
-            st.plotly_chart(style_fig(fig_map), use_container_width=True, config=MAP_CONFIG)
+        # Rough phone detection from the browser's user agent
+        user_agent = st.context.headers.get("User-Agent", "")
+        is_mobile = "Mobi" in user_agent or "Android" in user_agent
+
+        style_fig(fig_map)  # apply the shared style first...
+        # ...then override the parts that don't suit a map (must come AFTER style_fig)
+        fig_map.update_layout(
+            height=360 if is_mobile else 550,
+            margin=dict(t=45, l=0, r=0, b=10),   # room at the top for the zoom/pan toolbar
+            coloraxis_colorbar=dict(
+                orientation="h",                 # horizontal key under the map
+                x=0.5, xanchor="center",
+                y=-0.02, yanchor="top",
+                len=0.6 if is_mobile else 0.4,
+                thickness=12,
+                title=dict(text="Units sold", side="top"),
+            ),
+        )
+
+        if is_mobile:
+            st.plotly_chart(fig_map, use_container_width=True, config=MAP_CONFIG)
+        else:
+            map_col_left, map_col_center, map_col_right = st.columns([1, 6, 1])
+            with map_col_center:
+                st.plotly_chart(fig_map, use_container_width=True, config=MAP_CONFIG)
 
         with st.expander("View full location breakdown"):
             st.dataframe(
