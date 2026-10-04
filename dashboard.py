@@ -65,14 +65,16 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "683603": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_7db5297900107885.png",  # I Don't Blame You
     "827483": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dwf19135e7/images/2959/22502959_cover-large_file.png?sw=900&sh=1200&sm=fit",
     # Piano Joint (This Kind of Love)
-    "655513": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_0040fa7800100a33.png",  # It Means Beautiful
+    "655513": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dw04a8bbdc/images/4426/22304426_cover-large_file.png?sw=900&sh=1200&sm=fit", 
+    # It Means Beautiful
     "520999": "",  # Winning (deactivated due to incorrect metadata assignment by website) - no image
     "521008": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_ea56e39f000df6af.png",  # Help, I'm Alive (acoustic)
     "715828": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_c3506c450010ff4b.png",  # Breathing Underwater (acoustic)
     "646069": "",  # Rabbit in Your Headlights (deactivated due to incorrect metadata assignment by website) - no image
     "1177658": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_a3a8c84d00188822.png",  # Paris, Texas (instrumental)
     "1140815": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_29f1c6db0017efd0.png",  # Alone in Kyoto
-    "749218": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_4ab3f69d001188a3.png",  # Echoes of Silence
+    "749218": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dw77890f2b/images/2965/22412965_cover-large_file.png?sw=900&sh=1200&sm=fit", 
+    # Echoes of Silence
     "646071": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_e57f3f26000fe3b3.png",  # Calculation Theme
     "521007": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_128b9d79000df6ae.png",  # Five String Serenade
     "521006": "",  # Doctor Blind (deactivated due to incorrect metadata assignment by website) - no image
