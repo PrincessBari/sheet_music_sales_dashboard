@@ -110,7 +110,7 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "1454283": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_010c93f8001cedab.png",  # Winning
 }
 
-@st.cache_data(ttl=60 * 60 * 24 * 7, show_spinner=False)  # re-check covers at most once a week
+@st.cache_data(ttl=60 * 60 * 24, show_spinner=False)  # re-check covers at most once a day
 def sync_thumbnails(thumbnail_urls):  # URLs passed in, so editing one triggers a fresh check
     THUMBNAIL_DIR.mkdir(parents=True, exist_ok=True)
     changed = False
