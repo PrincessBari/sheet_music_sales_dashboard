@@ -1,11 +1,12 @@
 # Sheet Music Sales Dashboard
 
 An interactive dashboard tracking sales of my sheet music arrangements, published through
-ArrangeMe and sold on Sheet Music Plus, Sheet Music Direct, Sheet Music Direct App, and MuseScore.
-
-Built with **Streamlit**, **pandas** and **Plotly**.
+ArrangeMe and sold on Sheet Music Plus, Sheet Music Direct, the Sheet Music Direct app, and
+MuseScore. New sales reports are downloaded and published automatically on a schedule.
 
 **Live dashboard:** https://sheetmusicsalesdashboard.streamlit.app/
+
+Built with **Streamlit**, **pandas**, **Plotly** and **Playwright**.
 
 ## What's in the dashboard
 
@@ -30,20 +31,25 @@ Built with **Streamlit**, **pandas** and **Plotly**.
 
 ## How the data works
 
-1. **Download:** when run locally, the app logs into ArrangeMe with a headless browser
-   (Playwright) and downloads the latest sales report, at most once every 7 days.
-2. **Cleaning:** titles are corrected and artist and publish-date information is added by
-   AME ID.
-3. **Cover images:** preview images are downloaded from the URLs in `THUMBNAIL_URLS` and
+1. **Download:** `download_report.py` logs into ArrangeMe with a headless browser (Playwright)
+   and saves the latest sales report to `data/raw/sales_report_latest.csv`.
+2. **Publish:** `update_and_push.py` runs the download, then commits and pushes the new report
+   to GitHub. On macOS, `sheetmusic.plist` schedules it to run automatically with launchd.
+3. **Cleaning:** `dashboard.py` corrects titles and adds artist and publish-date information
+   by AME ID.
+4. **Cover images:** preview images are downloaded from the URLs in `THUMBNAIL_URLS` and
    re-checked weekly, so updated covers replace old ones.
 
-The public version doesn't log in anywhere. It reads the latest report committed to this
+The public dashboard never logs in anywhere. It reads the latest report committed to this
 repo, so no account credentials are stored in the cloud.
 
 ## Folder structure
 
 ```
+├── download_report.py
 ├── dashboard.py
+├── update_and_push.py
+├── sheetmusic.plist
 ├── requirements.txt
 ├── .gitignore
 └── data/
@@ -72,14 +78,26 @@ SITE_USERNAME = "your-email"
 SITE_PASSWORD = "your-password"
 ```
 
-## Updating the public dashboard
-
-Run the app locally to download a fresh report, then push it:
+Then run:
 
 ```bash
-git add data/raw/sales_report_latest.csv
-git commit -m "Update sales report"
-git push
+python download_report.py
 ```
 
-Streamlit Community Cloud redeploys automatically.
+## Updating the public dashboard
+
+Updates are automatic. To schedule them on macOS, edit the paths in `sheetmusic.plist` to match
+your machine, then load it:
+
+```bash
+cp sheetmusic.plist ~/Library/LaunchAgents/
+launchctl load ~/Library/LaunchAgents/sheetmusic.plist
+```
+
+To update manually instead:
+
+```bash
+python update_and_push.py
+```
+
+Streamlit Community Cloud redeploys automatically after each push.
