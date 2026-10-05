@@ -82,7 +82,7 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "697606": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_778c60aa0010afa6.png",  # Rolling Stone
     "706331": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_468245f40010d49e.png",  # Gold Guns Girls (acoustic)
     "1118988": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_15327f1c00179927.png",  # Friend Of The Night
-    "975844": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_3df5be4f00153ea8.png",  
+    "975844": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dwb40c8ee3/images/9409/22709409_cover-large_file.png?sw=900&sh=1200&sm=fit",  
     # 1 Ghosts I
     "982187": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_027f2cd80015587f.png",  # 13 Ghosts II
     "521003": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_6a862796000df6aa.png",  # Twice
