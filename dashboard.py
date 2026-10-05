@@ -82,14 +82,15 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "697606": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_778c60aa0010afa6.png",  # Rolling Stone
     "706331": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_468245f40010d49e.png",  # Gold Guns Girls (acoustic)
     "1118988": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_15327f1c00179927.png",  # Friend Of The Night
-    "975844": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_3df5be4f00153ea8.png",  # 1 Ghosts I
+    "975844": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dwb40c8ee3/images/9409/22709409_cover-large_file.png?sw=900&sh=1200&sm=fit",  
+    # 1 Ghosts I
     "982187": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_027f2cd80015587f.png",  # 13 Ghosts II
     "521003": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_6a862796000df6aa.png",  # Twice
     "521002": "",  # Rabbit in Your Headlights (deactivated due to incorrect metadata assignment by website) - no image
     "521004": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_2b3bc98b000df6ab.png",  # Leaving A Voicemail
     "761510": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_a84665340011b7dc.png",  # Twilight Galaxy (acoustic)
     "1131653": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_559419b10017cb82.png",  # Intro
-    "1175089": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_d25e9cac00187d0a.png",  # Piano Joint (This Kind of Love) (instrumental)
+    "1175089": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_85de51c400187d0a.png",  # Piano Joint (This Kind of Love) (instrumental)
     "1186453": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_6733363e0018ad4b.png",  # Twice (instrumental)
     "520997": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_fe277454000df6a6.png",  # Too Raging To Cheers
     "1136775": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_ead8953e0017e01a.png",  # I'm Jim Morrison, I'm Dead
