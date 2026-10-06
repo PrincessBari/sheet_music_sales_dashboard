@@ -68,7 +68,7 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "655513": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dw04a8bbdc/images/4426/22304426_cover-large_file.png?sw=900&sh=1200&sm=fit", 
     # It Means Beautiful
     "520999": "",  # Winning (deactivated due to incorrect metadata assignment by website) - no image
-    "521008": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_ea56e39f000df6af.png",  # Help, I'm Alive (acoustic)
+    "521008": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_f804e66e000df6af.png",  # Help, I'm Alive (acoustic)
     "715828": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_c3506c450010ff4b.png",  # Breathing Underwater (acoustic)
     "646069": "",  # Rabbit in Your Headlights (deactivated due to incorrect metadata assignment by website) - no image
     "1177658": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_a3a8c84d00188822.png",  # Paris, Texas (instrumental)
