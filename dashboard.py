@@ -79,8 +79,8 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "521007": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_128b9d79000df6ae.png",  # Five String Serenade
     "521006": "",  # Doctor Blind (deactivated due to incorrect metadata assignment by website) - no image
     "521005": "",  # Crowd Surf Off a Cliff (deactivated due to incorrect metadata assignment by website) - no image
-    "697606": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_778c60aa0010afa6.png",  # Rolling Stone
-    "706331": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_468245f40010d49e.png",  # Gold Guns Girls (acoustic)
+    "697606": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dw1ce77378/images/4063/22334063_cover-large_file.png?sw=900&sh=1200&sm=fit",  # Rolling Stone
+    "706331": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dw2cac8676/images/7895/22347895_cover-large_file.png?sw=900&sh=1200&sm=fit",  # Gold Guns Girls (acoustic)
     "1118988": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_15327f1c00179927.png",  # Friend Of The Night
     "975844": "https://www.sheetmusicplus.com/dw/image/v2/BJFX_PRD/on/demandware.static/-/Sites-smp-main/default/dwb40c8ee3/images/9409/22709409_cover-large_file.png?sw=900&sh=1200&sm=fit",  
     # 1 Ghosts I
@@ -109,6 +109,10 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "1454286": "https://www.sheetmusicplus.com/smp-cdn-assets/items/23740551/cover_images/cover-large_file.png@900",  # Doctor Blind (instrumental)
     "1454285": "https://www.sheetmusicplus.com/smp-cdn-assets/items/23740552/cover_images/cover-large_file.png@900",  # Doctor Blind
     "1454283": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_010c93f8001cedab.png",  # Winning
+    "1454303": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_fa611021001cedbd.png",  # Wandering Star (instrumental)
+    "1470054": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_71b381ba001d2d4b.png",  # Hurt
+    "1475449": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_96f9cbb8001d4271.png",  # Crowd Surf Off A Cliff (instrumental)
+    "1476870": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_afccdb30001d488d.png",  # Crowd Surf Off A Cliff 
 }
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner=False)  # re-check covers at most once a day
@@ -220,6 +224,10 @@ AME_ID_INFO = {
     "761510": {"Title": "Twilight Galaxy (acoustic)", "Artist": "Metric", "Date Published": "2023-01-14"},
     "521002": {"Title": "Rabbit In Your Headlights (deactivated)", "Artist": "Unkle", "Date Published": "2022-04-28"},
     "1454283": {"Title": "Winning", "Artist": "Emily Haines & The Soft Skeleton", "Date Published": "2026-05-16"},
+    "1454303": {"Title": "Wandering Star (instrumental)", "Artist": "Portishead", "Date Published": "2026-05-16"},
+    "1470054": {"Title": "Hurt", "Artist": "Nine Inch Nails", "Date Published": "2026-06-07"},
+    "1475449": {"Title": "Crowd Surf Off A Cliff (instrumental)", "Artist": "Emily Haines & The Soft Skeleton", "Date Published": "2026-06-14"},
+    "1476870": {"Title": "Crowd Surf Off A Cliff", "Artist": "Emily Haines & The Soft Skeleton", "Date Published": "2026-06-16"},
 }
 
 
@@ -668,7 +676,8 @@ st.sidebar.markdown(
     unsafe_allow_html=True,
 )
 
-all_artists = sorted(df_base["Artist"].unique())
+df_base["Artist"] = df_base["Artist"].fillna("Unknown artist")
+all_artists = sorted(df_base["Artist"].dropna().astype(str).unique())
 
 for a in all_artists:
     if f"artist_cb_{a}" not in st.session_state:
@@ -904,7 +913,7 @@ with tab_overview:
             x="Quantity",
             y="Artist",
             orientation="h",
-            title="Units Sold by Artist",
+            title="Units Sold/Viewed by Artist",
             labels={"Artist": "", "Quantity": "Units (Downloads + Views)"},
         )
         fig_artists.update_traces(
@@ -968,7 +977,7 @@ with tab_overview:
             x="Quantity",
             y="Artist - Title",
             orientation="h",
-            title="Units Sold by Title",
+            title="Units Sold/Viewed by Title",
             labels={"Artist - Title": ""},
         )
         fig_titles.update_traces(
