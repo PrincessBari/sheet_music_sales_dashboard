@@ -802,7 +802,7 @@ with tab_overview:
     m1, m2, m3 = st.columns(3)
     with m1:
         metric_card(
-            "Total Titles Sold",
+            "Total Titles Sold/Viewed",
             f"{total_qty:,}",
             subtext=f"By Transaction Type:<br> Purchase (download): {qty_purchase:,} · View (subscription): {qty_view:,}",
         )
@@ -842,7 +842,12 @@ with tab_overview:
     else:
         # Every month in the selected Date Sold range, so months with no
         # sales count as 0 instead of being skipped (which would inflate the averages)
-        all_months = pd.period_range(start_sold, end_sold, freq="M")
+        # Don't count months before the selected title(s) were published
+        first_published = filtered["Date Published"].min()
+        range_start = start_sold
+        if pd.notna(first_published):
+            range_start = max(start_sold, first_published.date())
+        all_months = pd.period_range(range_start, end_sold, freq="M")
         monthly = (
             filtered.groupby(filtered["Date Sold"].dt.to_period("M"))[
                 ["Quantity", "Sales", "Est. Commissions"]
@@ -875,7 +880,7 @@ with tab_overview:
 
     a1, a2, a3 = st.columns(3)
     with a1:
-        monthly_card("Avg. Titles Sold per Month", "Quantity", fmt_units)
+        monthly_card("Avg. Titles Sold/Viewed per Month", "Quantity", fmt_units)
     with a2:
         monthly_card("Avg. Sales per Month", "Sales", fmt_money)
     with a3:
@@ -893,7 +898,7 @@ with tab_overview:
 
 
     # ---- Artists by Units Sold ----
-    st.subheader("Artists by Units Sold, Est. Commissions")
+    st.subheader("Artists by Units Sold/Viewed, Est. Commissions")
     artist_summary = (
         filtered.groupby("Artist")
         .agg(
@@ -940,7 +945,7 @@ with tab_overview:
     with st.expander(f"View all {artist_summary.shape[0]} artists"):
         st.dataframe(
             artist_summary.rename(
-                columns={"Quantity": "Titles Sold", "Est_Commissions": "Est. Commissions"}
+                columns={"Quantity": "Titles Sold/Viewed", "Est_Commissions": "Est. Commissions"}
             ).style.format({"Sales": "${:,.2f}", "Est. Commissions": "${:,.2f}"}),
             use_container_width=True,
             hide_index=True,
@@ -949,17 +954,34 @@ with tab_overview:
     st.markdown("---")
 
     # ---- Top Titles ----
-    st.subheader("Titles by Units Sold, Est. Commissions")
+    st.subheader("Titles by Units Sold/Viewed, Est. Commissions")
     title_summary = (
         filtered.groupby(["Artist", "Title"])
         .agg(
             Quantity=("Quantity", "sum"),
             Sales=("Sales", "sum"),
             Est_Commissions=("Est. Commissions", "sum"),
+            Date_Published=("Date Published", "min"),
         )
         .reset_index()
         .sort_values("Quantity", ascending=False)
     )
+
+    # Each title's average per month, counting only the months it's been
+    # out (within the selected Date Sold range)
+    start_period = pd.Period(start_sold, freq="M")
+    end_period = pd.Period(end_sold, freq="M")
+
+    def _months_live(pub):
+        if pd.isna(pub):
+            return None
+        first = max(pd.Period(pub, freq="M"), start_period)
+        return (end_period - first).n + 1
+
+    title_summary["Avg_per_Month"] = (
+        title_summary["Quantity"] / title_summary["Date_Published"].map(_months_live)
+    )
+
     title_summary["Artist - Title"] = title_summary["Artist"] + " - " + title_summary["Title"]
 
     # Map each Title to its cached thumbnail path (if any), as a lookup —
@@ -1004,16 +1026,22 @@ with tab_overview:
         st.plotly_chart(lock_fig(style_fig(fig_titles_money)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
     with st.expander(f"View all {title_summary.shape[0]} titles with sheet music previews"):
-        display_cols = ["Preview", "Artist", "Title", "Quantity", "Sales", "Est_Commissions"]
+        display_cols = ["Preview", "Artist", "Title", "Quantity", "Avg_per_Month", "Sales", "Est_Commissions"]
         st.caption("Select a row to see sheet music preview")
         event = st.dataframe(
             title_summary[display_cols].rename(
-                columns={"Quantity": "Titles Sold", "Est_Commissions": "Est. Commissions"}
+                columns={"Quantity": "Titles Sold/Viewed",
+                         "Avg_per_Month": "Avg. Sold/Viewed per Month",
+                         "Est_Commissions": "Est. Commissions"}
             ),
             use_container_width=True,
             hide_index=True,
             column_config={
                 "Preview": st.column_config.ImageColumn("Preview", width="small"),
+                "Avg. Sold/Viewed per Month": st.column_config.NumberColumn(
+                    "Avg. Sold/Viewed per Month", format="%.1f",
+                    help="Units sold or viewed per month since this title was published",
+                ),
                 "Sales": st.column_config.NumberColumn("Sales", format="$%.2f"),
                 "Est. Commissions": st.column_config.NumberColumn("Est. Commissions", format="$%.2f"),
             },
@@ -1047,10 +1075,24 @@ with tab_overview:
     else:
         location_summary = (
             purchases.groupby("Location")
-            .agg(Quantity=("Quantity", "sum"), Sales=("Sales", "sum"))
+            .agg(Quantity=("Quantity", "sum"),
+                 Sales=("Sales", "sum"),
+                 **{"Est. Commissions": ("Est. Commissions", "sum")},
+                 )
             .reset_index()
             .sort_values("Quantity", ascending=False)
         )
+
+        country_count = location_summary["Location"].nunique()
+        top_country = location_summary.iloc[0]
+
+        kpi_col, _, _ = st.columns(3)
+        with kpi_col:
+            metric_card(
+                "Total Countries",
+                f"{country_count:,}",
+                subtext=f"Top country: {top_country['Location']} ({top_country['Quantity']:,} units)",
+            )
 
         # Starts at a visible rose tint (not beige) so low-selling countries
         # stand out clearly from countries with no sales (land = BG_MAIN)
@@ -1065,7 +1107,7 @@ with tab_overview:
             locations="Location",
             locationmode="country names",
             color="Quantity",
-            hover_data={"Sales": ":$,.2f"},
+            hover_data={"Sales": ":$,.2f", "Est. Commissions": ":$,.2f"},
             color_continuous_scale=MAP_SCALE,
         )
         fig_map.update_geos(
@@ -1102,7 +1144,7 @@ with tab_overview:
 
         with st.expander("View full location breakdown"):
             st.dataframe(
-                location_summary.style.format({"Sales": "${:,.2f}"}),
+                location_summary.style.format({"Sales": "${:,.2f}", "Est. Commissions": "${:,.2f}"}),
                 use_container_width=True,
                 hide_index=True,
             )
@@ -1131,7 +1173,7 @@ with tab_deep_dive:
             x="Date Sold",
             y="Quantity",
             markers=True,
-            title="Titles Sold Over Time",
+            title="Titles Sold/Viewed Over Time",
         )
         fig_qty_time.update_traces(line_color=ACCENT, marker_color=ACCENT)
         st.plotly_chart(lock_fig(style_fig(fig_qty_time)), use_container_width=True, config=STATIC_CHART_CONFIG)
@@ -1166,7 +1208,7 @@ with tab_deep_dive:
                 channel_summary,
                 x="Channel",
                 y="Quantity",
-                title="Titles Sold by Channel",
+                title="Titles Sold/Viewed by Channel",
             )
             fig_channel.update_traces(marker_color=ACCENT)
             st.plotly_chart(lock_fig(style_fig(fig_channel)), use_container_width=True, config=STATIC_CHART_CONFIG)
@@ -1220,7 +1262,7 @@ with tab_deep_dive:
             )
             st.plotly_chart(lock_fig(style_fig(fig_tx)), use_container_width=True, config=STATIC_CHART_CONFIG)
 
-        st.markdown("Spread of **Est. Commissions** per Unit Sold, by Transaction Type")
+        st.markdown("Spread of **Est. Commissions** per Unit Sold/Viewed, by Transaction Type")
         per_unit = filtered.copy()
         per_unit["Est. Commissions per Unit"] = per_unit["Est. Commissions"] / per_unit["Quantity"]
         tx_stats = (
