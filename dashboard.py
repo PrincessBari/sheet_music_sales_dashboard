@@ -308,6 +308,7 @@ def show_cover(title, img):
 # Design tokens
 # ----------------------------------------------------------------------------
 BG_MAIN = "#F6F3EC"
+BG_NOTE = "#FFFFFF"
 BG_SURFACE = "#FFFFFF"
 TEXT_PRIMARY = "#2A2420"
 TEXT_SECONDARY = "#7A7267"
@@ -431,6 +432,13 @@ st.markdown(
     }}
     [data-testid="stTabs"] [data-baseweb="tab-border"] {{
         background-color: {BORDER} !important;
+    }}
+
+    [data-testid="stTabs"] {{
+        margin-top: -0.5rem !important;
+    }}
+    [data-testid="stExpander"] {{
+        margin-bottom: -0.25rem !important;
     }}
 
     /* Sidebar */
@@ -608,6 +616,32 @@ sync_thumbnails(THUMBNAIL_URLS)
 df = clean_data(str(raw_path), raw_path.stat().st_mtime)
 
 st.title("Sheet Music Sales Dashboard")
+st.markdown(
+    f'<div style="background-color:{BG_NOTE}; border:1px solid {BORDER}; '
+    f'border-radius:4px; padding:0.9rem 1.1rem; margin-bottom:1rem; color:{TEXT_PRIMARY}; '
+    f'font-size:0.92rem; line-height:1.55;">'
+    f'<div style="font-family:{FONT_BODY}; font-size:0.95rem; font-weight:600; margin-bottom:0.5rem;">'
+    f'Key Terms</div>'
+    f'<strong>Purchase (download):</strong> a customer buys the arrangement and downloads it. '
+    f'I earn 10% of the sale price (usually &#36;4.99–&#36;8.70).<br>'
+    f'<strong>View (subscription):</strong> a subscriber opens the full score in an app without buying it. '
+    f'I earn a small pro-rata share of subscription revenue, typically &#36;0.01–&#36;0.07 per view.<br>'
+    f'</div>',
+    unsafe_allow_html=True,
+)
+
+with st.expander("A note about subscription views"):
+    st.markdown(
+        "In December 2023, Muse Group acquired Hal Leonard and ArrangeMe, and in April 2024, "
+        "all creator accounts were automatically opted into **Subscription Views** distribution. "
+        "This suddenly gave subscribers full access to view our full scores, with each view paying "
+        "only between \\$0.01 and \\$0.07, rather than the usual 10% of a song's sale price.\n\n"
+        "I opted out in April 2026, but subscribers kept full access to my sheet music through June 2026. "
+        "In the **Artist / Title Deep Dive** tab, the *Titles Sold/Viewed Over Time* chart shows sharp "
+        "spikes at the end of each quarter from June 2024 through June 2026, since subscription views "
+        "were reported on the last day of each quarter."
+    )
+
 st.markdown('<div class="mobile-only filters-label">Filters</div>', unsafe_allow_html=True)
 
 # ----------------------------------------------------------------------------
@@ -802,7 +836,7 @@ with tab_overview:
     m1, m2, m3 = st.columns(3)
     with m1:
         metric_card(
-            "Total Titles Sold/Viewed",
+            "Total Titles Purchased + Viewed",
             f"{total_qty:,}",
             subtext=f"By Transaction Type:<br> Purchase (download): {qty_purchase:,} · View (subscription): {qty_view:,}",
         )
@@ -880,7 +914,7 @@ with tab_overview:
 
     a1, a2, a3 = st.columns(3)
     with a1:
-        monthly_card("Avg. Titles Sold/Viewed per Month", "Quantity", fmt_units)
+        monthly_card("Avg. Titles Puchased + Viewed per Month", "Quantity", fmt_units)
     with a2:
         monthly_card("Avg. Sales per Month", "Sales", fmt_money)
     with a3:
@@ -898,7 +932,7 @@ with tab_overview:
 
 
     # ---- Artists by Units Sold ----
-    st.subheader("Artists by Units Sold/Viewed, Est. Commissions")
+    st.subheader("Artists by Units Purchased + Viewed, Est. Commissions")
     artist_summary = (
         filtered.groupby("Artist")
         .agg(
@@ -918,8 +952,8 @@ with tab_overview:
             x="Quantity",
             y="Artist",
             orientation="h",
-            title="Units Sold/Viewed by Artist",
-            labels={"Artist": "", "Quantity": "Units (Downloads + Views)"},
+            title="Units Purchased + Viewed by Artist",
+            labels={"Artist": "", "Quantity": "Quantity"},
         )
         fig_artists.update_traces(
             marker_color=ACCENT, hovertemplate="Units: %{x}<extra></extra>"
@@ -954,7 +988,7 @@ with tab_overview:
     st.markdown("---")
 
     # ---- Top Titles ----
-    st.subheader("Titles by Units Sold/Viewed, Est. Commissions")
+    st.subheader("Titles by Units Purchased + Viewed, Est. Commissions")
     title_summary = (
         filtered.groupby(["Artist", "Title"])
         .agg(
@@ -999,7 +1033,7 @@ with tab_overview:
             x="Quantity",
             y="Artist - Title",
             orientation="h",
-            title="Units Sold/Viewed by Title",
+            title="Units Purchased + Viewed by Title",
             labels={"Artist - Title": ""},
         )
         fig_titles.update_traces(
@@ -1227,7 +1261,7 @@ with tab_deep_dive:
         st.markdown("---")
 
         # ---- Transaction Type split (Purchase vs. View) ----
-        st.subheader("Purchase vs. View")
+        st.subheader("Purchase (download) vs. View (subscription)")
         tx_summary = (
             filtered.groupby("Transaction Type")
             .agg(
