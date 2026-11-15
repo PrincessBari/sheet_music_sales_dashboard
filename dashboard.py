@@ -112,7 +112,8 @@ THUMBNAIL_URLS = { # "<ame_id>": "<image url>",
     "1454303": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_fa611021001cedbd.png",  # Wandering Star (instrumental)
     "1470054": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_71b381ba001d2d4b.png",  # Hurt
     "1475449": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_96f9cbb8001d4271.png",  # Crowd Surf Off A Cliff (instrumental)
-    "1476870": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_afccdb30001d488d.png",  # Crowd Surf Off A Cliff 
+    "1476870": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_afccdb30001d488d.png",  # Crowd Surf Off A Cliff
+    "1491737": "https://s3.amazonaws.com/halleonard-pagepreviews/UG_247b4f20001d8770.png",  # Brothers on a Hotel Bed (instrumental)
 }
 
 @st.cache_data(ttl=60 * 60 * 24, show_spinner=False)  # re-check covers at most once a day
@@ -228,6 +229,7 @@ AME_ID_INFO = {
     "1470054": {"Title": "Hurt", "Artist": "Nine Inch Nails", "Date Published": "2026-06-07"},
     "1475449": {"Title": "Crowd Surf Off A Cliff (instrumental)", "Artist": "Emily Haines & The Soft Skeleton", "Date Published": "2026-06-14"},
     "1476870": {"Title": "Crowd Surf Off A Cliff", "Artist": "Emily Haines & The Soft Skeleton", "Date Published": "2026-06-16"},
+    "1476870": {"Title": "Brothers on a Hotel Bed", "Artist": "Death Cab for Cutie", "Date Published": "2026-07-04"},
 }
 
 
